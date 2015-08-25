@@ -17,6 +17,8 @@ int A[SIZE] = {58,  89,   32, 73,  131, 156, 30,  29,
 
 int B[6][32]; // LOG2(SIZE) + 1 
 int C[6][32]; // LOG2(SIZE) + 1 
+int S[6][32]; // LOG2(SIZE) + 1 
+
 
 int h; //global for STEP2&3
 void execute(int num_threads, void * (*func)(void *)) {
@@ -54,6 +56,14 @@ void *init(void *threadid)
 	pthread_exit(NULL);
 }
 
+void *R_init(void *threadid)
+{
+	long tid;
+	tid = (long)threadid;
+    B[0][SIZE-tid-1] = A[tid];
+	pthread_exit(NULL);
+}
+
 //balanced tree method
 void *minimum(void *threadid)
 {
@@ -87,6 +97,7 @@ void *combine(void *threadid)
 	pthread_exit(NULL);
 }
 
+
 int main (int argc, char ** argv)
 {
 	int i;
@@ -115,12 +126,48 @@ int main (int argc, char ** argv)
 	}
 
 //Print all results
-	printf("minimum prefix is: \n");
+	printf("prefix minimum is: \n");
 	for (i = 0; i<SIZE; i++ )
 	{
 		printf("%d ", C[0][i]);
 	}
 	printf("\n");
+
+
+
+
+//DO THE PREFIX NOW, by rotating
+
+//STEP 1
+	execute(NUM_THREADS, R_init); //<--- REVERSE INITIALIZATION
+	
+//STEP2
+	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
+	{
+		n_threads = SIZE/(int)pow(2,h);
+		pthread_barrier_init (&barrier, NULL, n_threads);
+		execute(n_threads,minimum);
+	}
+
+//STEP3
+	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
+	{
+		n_threads = SIZE/(int)pow(2,h);
+		pthread_barrier_init (&barrier, NULL, n_threads);
+		execute(n_threads,combine);
+	}
+
+
+//Print all results
+	printf("suffix minimum  is: \n");
+	for (i = 0; i<SIZE; i++ )
+	{
+		printf("%d ", C[0][SIZE-i-1]);
+	}
+	printf("\n");
+
+
+
  
 
 	pthread_barrier_destroy(& barrier);
