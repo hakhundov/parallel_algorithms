@@ -6,8 +6,6 @@
 #define SIZE 32
 #define NUM_THREADS 32
 
-#define DEBUG
-
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
 pthread_barrier_t   barrier; // barrier synchronization object
@@ -20,11 +18,32 @@ int A[SIZE] = {58,  89,   32, 73,  131, 156, 30,  29,
 int B[6][32]; // LOG2(SIZE) + 1 
 int C[6][32]; // LOG2(SIZE) + 1 
 
-int h; //global for STEP2
-int i;
-int prefix_minima[SIZE];
-int suffix_minima[SIZE];
+int h; //global for STEP2&3
+void execute(int num_threads, void * (*func)(void *)) {
+	pthread_t threads[NUM_THREADS];
+	int rc;
+	long t;
+	for(t=0; t<num_threads; t++)
+	{
+		rc = pthread_create(&threads[t], NULL, func, (void *)t);
+		if (rc)
+		{
+			printf("ERROR; return code from pthread_create() is %d\n", rc);
+			exit(-1);
+		}
+	}
 
+	//Join all threads
+	for(t=0; t<num_threads; t++)
+	{
+		rc = pthread_join(threads[t], NULL);
+		if (rc)
+		{
+			printf("ERROR; return code from pthread_join() is %d\n", rc);
+			exit(-1);
+      	}
+	}
+}
 
 //initialize B[0,for all] = A[for all]
 void *init(void *threadid)
@@ -43,10 +62,6 @@ void *minimum(void *threadid)
     B[h][tid] = min (  B[h-1][2*tid], B[h-1][2*tid+1]  );
 	pthread_barrier_wait(&barrier);
 	pthread_exit(NULL);
-
-#ifdef DEBUGx	
-printf("thread id  %d , comparing:  %d  &  %d  \n", tid, B[h-1][2*tid], B[h-1][2*tid+1]);	
-#endif
 }
 
 void *combine(void *threadid)
@@ -77,153 +92,36 @@ int main (int argc, char ** argv)
 	int i;
 	int n_threads;
 
+	pthread_t threads[NUM_THREADS];
 	printf ("Assignment A:  pthread Algorithm! \n" );
 
-//STEP 1////////////////////////////////////////////////////////////////////////////////
-//Create init all threads
-	pthread_t threads[NUM_THREADS];
-	int rc;
-	long t;
-	for(t=0; t<NUM_THREADS; t++)
+//STEP 1
+	execute(NUM_THREADS, init);
+	
+//STEP2
+	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
 	{
-		rc = pthread_create(&threads[t], NULL, init, (void *)t);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_create() is %d\n", rc);
-			exit(-1);
-		}
+		n_threads = SIZE/(int)pow(2,h);
+		pthread_barrier_init (&barrier, NULL, n_threads);
+		execute(n_threads,minimum);
 	}
 
-//Join all threads
-	for(t=0; t<NUM_THREADS; t++)
+//STEP3
+	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
 	{
-		rc = pthread_join(threads[t], NULL);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_join() is %d\n", rc);
-			exit(-1);
-      	}
+		n_threads = SIZE/(int)pow(2,h);
+		pthread_barrier_init (&barrier, NULL, n_threads);
+		execute(n_threads,combine);
 	}
 
-
-#ifdef DEBUG
-	//Print init  results
+//Print all results
+	printf("minimum prefix is: \n");
 	for (i = 0; i<SIZE; i++ )
 	{
-		printf("%d ", B[0][i]);
+		printf("%d ", C[0][i]);
 	}
 	printf("\n");
-#endif   
-	
-//STEP2////////////////////////////////////////////////////////////////////////////////
-
-for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
-{
-
-#ifdef DEBUGx
-printf(" h = %d \n", h);
-#endif
-
- //Create minimizing  threads
-	
-	n_threads = SIZE/(int)pow(2,h);
-	
-	pthread_barrier_init (&barrier, NULL, n_threads);
-
-	for(t=0; t< n_threads; t++)
-	{
-		rc = pthread_create(&threads[t], NULL, minimum, (void *)t);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_create() is %d\n", rc);
-			exit(-1);
-		}
-	}
-
-//Join all threads
-	for(t=0;  t<n_threads; t++)
-	{
-		rc = pthread_join(threads[t], NULL);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_join() is %d\n", rc);
-			exit(-1);
-      	}
-	}
-
-#ifdef DEBUG
-printf("\n n_threads = %d\t\n", n_threads);
-for (i = 0; i<n_threads; i++ )
-{
-	printf("%d ", B[h][i]);
-}
-printf("\n");
-#endif
-}
-
-#ifdef DEBUG
-printf ("\n-----\ncombining step! \n");
-#endif
-
-//STEP3////////////////////////////////////////////////////////////////////////////////
-for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
-{
-
-#ifdef DEBUGx
-printf(" h = %d \n", h);
-#endif
-
- //Create minimizing  threads
-	
-	n_threads = SIZE/(int)pow(2,h);
-	
-	pthread_barrier_init (&barrier, NULL, n_threads);
-
-	for(t=0; t< n_threads; t++)
-	{
-		rc = pthread_create(&threads[t], NULL, combine, (void *)t);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_create() is %d\n", rc);
-			exit(-1);
-		}
-	}
-
-//Join all threads
-	for(t=0;  t<n_threads; t++)
-	{
-		rc = pthread_join(threads[t], NULL);
-		if (rc)
-		{
-			printf("ERROR; return code from pthread_join() is %d\n", rc);
-			exit(-1);
-      	}
-	}
-
-#ifdef DEBUG
-printf("\n n_threads = %d\t\n", n_threads);
-for (i = 0; i<n_threads; i++ )
-{
-	printf("%d ", C[h][i]);
-}
-printf("\n");
-#endif
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-
-//#ifdef DEBUG
-//Print all results
-
-printf("minimum prefix is: \n");
-
-for (i = 0; i<SIZE; i++ )
-{
-	printf("%d ", C[0][i]);
-}
-printf("\n");
-//#endif   
+ 
 
 	pthread_barrier_destroy(& barrier);
 	pthread_exit(NULL);
