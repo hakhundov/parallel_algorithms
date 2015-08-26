@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <math.h>
+#include <sys/time.h>
 
 #define SIZE 32
 #define NUM_THREADS 32
@@ -103,8 +104,20 @@ int main (int argc, char ** argv)
 	int i;
 	int n_threads;
 
+
+struct timeval startt, endt, result1, result2;
+result1.tv_sec = 0;
+result1.tv_usec= 0;
+result2.tv_sec = 0;
+result2.tv_usec= 0;
+
+
 	pthread_t threads[NUM_THREADS];
 	printf ("Assignment A:  pthread Algorithm! \n" );
+
+//
+gettimeofday(&startt, NULL);
+//
 
 //STEP 1
 	execute(NUM_THREADS, init);
@@ -133,9 +146,15 @@ int main (int argc, char ** argv)
 	}
 	printf("\n");
 
+//
+gettimeofday(&endt, NULL);
+//
+result1.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
 
-
+//
+gettimeofday(&startt, NULL);
+//
 //DO THE PREFIX NOW, by rotating
 
 //STEP 1
@@ -157,6 +176,10 @@ int main (int argc, char ** argv)
 		execute(n_threads,combine);
 	}
 
+//
+gettimeofday(&endt, NULL);
+//
+result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
 //Print all results
 	printf("suffix minimum  is: \n");
@@ -166,8 +189,10 @@ int main (int argc, char ** argv)
 	}
 	printf("\n");
 
-
-
+//add the two different timings to get the whole
+result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
+result1.tv_usec = result1.tv_usec + result2.tv_usec;
+printf(" %ld.%06ld | ", result1.tv_usec/1000000, result1.tv_usec%1000000);
  
 
 	pthread_barrier_destroy(& barrier);

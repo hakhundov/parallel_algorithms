@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #define SIZE 32
 
@@ -15,9 +16,15 @@ int i;
 int prefix_minima[SIZE];
 int suffix_minima[SIZE];
 
+struct timeval startt, endt, result;
+result.tv_sec = 0;
+result.tv_usec= 0;
 
 prefix_minima[0] = A[0];
- 
+
+//
+gettimeofday(&startt, NULL);
+//
 for (i = 1; i<SIZE; i++ )
 	{
 	 if (A[i] <= prefix_minima[i-1])
@@ -43,8 +50,9 @@ for (i = 1; i<SIZE+1; i++ )
 		suffix_minima[SIZE-i-1] = suffix_minima[SIZE-i];
 	}
 }
-
-
+//
+gettimeofday(&endt, NULL);
+//
 
 for (i = 0; i<SIZE; i++ )
 {
@@ -57,7 +65,10 @@ for (i = 0; i<SIZE; i++ )
 	printf("%d " ,suffix_minima[i]);
 }
 printf("\n");
- 
+
+
+result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
+printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
 
 
    return 0 ;
