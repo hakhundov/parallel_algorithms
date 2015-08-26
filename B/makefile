@@ -4,7 +4,7 @@ all: main.c
 	$(CC) main.c -o B 
 
 pthread: p_main.c
-	$(CC) p_main.c -o p_C -lpthread
+	$(CC) p_main.c -o p_B -lpthread
 
 omp: omp_main.c
 	$(CC) omp_main.c -lm -o omp_B -fopenmp

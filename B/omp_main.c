@@ -7,7 +7,7 @@
 
 int main (int argc, char ** argv)
 {
-   printf ("Assignment B:  Sequential Algorithm! \n" );
+   printf ("Assignment B:  openMP Algorithm! \n" );
 
 	struct timeval startt, endt, result;
 	result.tv_sec = 0;
@@ -34,34 +34,36 @@ for (i = 0; i<SIZE_A; i++)  C[i] = A[i];
 for (i = 0; i<SIZE_B; i++)  C[i+SIZE_A] = B[i]; 
 for (i = 0; i<SIZE_A+SIZE_B; i++) rank[i]=0;
 
-for (i = 0; i<SIZE_A+SIZE_B; i++)
+#pragma omp parallel shared(C) private(i,k)
 {
-	for (k = 0; k<SIZE_A+SIZE_B; k++ )
-		{
-  			if (C[k]<=C[i]) rank[i]++;
-		}	
+	#pragma omp for
+	for (i = 0; i<SIZE_A+SIZE_B; i++)
+	{
+		for (k = 0; k<SIZE_A+SIZE_B; k++ )
+			{
+	  			if (C[k]<=C[i]) rank[i]++;
+			}	
+	}
 }
 
+#pragma omp for
 for (i = 0; i<SIZE_A+SIZE_B; i++ )
 {
   sorted[rank[i]-1] = C[i];
 }
 
-
 //
 gettimeofday (&endt, NULL);
 //
-
 
 for (i = 0; i<SIZE_A+SIZE_B; i++ )
 {
 	printf("%d ", sorted[i]);
 }
 printf("\n");
-
+ 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
- 
 
    return 0 ;
 }
