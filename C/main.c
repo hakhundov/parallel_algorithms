@@ -1,53 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #define SIZE 16
 
 int main (int argc, char ** argv)
 {
-   printf ("Assignment C:  Sequential Algorithm! \n" );
+	printf ("Assignment C:  Sequential Algorithm! \n" );
 
+	int A[SIZE] = {	14, 13, 5, 16,
+			11, 10, 9, 12,
+			0, 8, 7, 15,
+			4, 3, 2, 1};
 
+	int distance[SIZE];
+	int i,k;
 
-int A[SIZE] = {14, 13, 5, 16,
-			   11, 10, 9, 12,
-			   0, 8, 7, 15,
-			   4, 3, 2, 1};
+	struct timeval startt, endt, result;
+	result.tv_sec = 0;
+	result.tv_usec= 0;
 
-int distance[SIZE];
-int i,k;
+//
+gettimeofday (&startt, NULL);
+//
 
+	for (i = 0; i<SIZE; i++) distance[i]=0;
 
-for (i = 0; i<SIZE; i++)
-	distance[i]=0;
+	for (i = 0; i<SIZE; i++)
+	{
+		k = i;
 
-for (i = 0; i<SIZE; i++)
-{
-//printf ("\n === i is: %d \n", i );
-   
-k = i;
+		while (1)
+		{ 
+			if (A[k] == 0) break;
+			else k = A[k]-1;
+			distance[i]++;
+		} 
+	}
 
-	while (1)
-     { 
-        //printf ("A[k-1]: %d", A[k-1]);
-		if (A[k] == 0) break;
-        else k = A[k]-1;
-		distance[i]++;
-     } 
-}
+//
+gettimeofday (&endt, NULL);
+//
 
+	for (i = 0; i<SIZE; i++ )
+	{
+		printf("%d ", distance[i]);
+	}
+	printf("\n");
 
-
- 
-
-
-for (i = 0; i<SIZE; i++ )
-{
-	printf("%d ", distance[i]);
-}
-printf("\n");
- 
-
+	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
+	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
 
    return 0 ;
 }
