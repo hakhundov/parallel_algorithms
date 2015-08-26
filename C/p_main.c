@@ -41,7 +41,7 @@ void *jump(void *threadid)
 int main (int argc, char ** argv)
 {
 	int i;
-	printf ("Assignment C:  Sequential Algorithm! \n" );
+	printf ("Assignment C:  pthread Algorithm! \n" );
 	pthread_barrier_init (&barrier, NULL, NUM_THREADS);
 
 //Create all threads

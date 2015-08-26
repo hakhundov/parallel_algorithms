@@ -85,7 +85,7 @@ int main (int argc, char ** argv)
 	int i;
 	int n_threads;
 
-	printf ("Assignment A:  pthread Algorithm! \n" );
+	printf ("Assignment A:  openMP Algorithm! \n" );
 
 struct timeval startt, endt, result1, result2;
 result1.tv_sec = 0;
