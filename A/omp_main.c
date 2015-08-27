@@ -104,14 +104,14 @@ gettimeofday(&startt, NULL);
 	execute(NT, init);
 	
 //STEP2
-	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
+	for (h=1; h<=log2(SIZE); h++) 
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		execute(n_threads,minimum);
 	}
 
 //STEP3
-	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
+	for (h=log2(SIZE); h>=0; h--)
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		execute(n_threads,combine);
@@ -143,14 +143,14 @@ gettimeofday(&startt, NULL);
 	execute(NT, R_init); //<--- REVERSE INITIALIZATION
 	
 //STEP2
-	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
+	for (h=1; h<=log2(SIZE); h++)
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		execute(n_threads,minimum);
 	}
 
 //STEP3
-	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
+	for (h=log2(SIZE); h>=0; h--)
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		execute(n_threads,combine);

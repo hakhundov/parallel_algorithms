@@ -10,3 +10,10 @@ pthread: p_main.c
 
 omp: omp_main.c
 	$(CC) omp_main.c -lm -o omp -fopenmp
+
+verbose: main.c p_main.c omp_main.c	
+	$(CC) main.c -DVERBOSE -lm -o serial
+	$(CC) p_main.c -DVERBOSE -lm -o pthread -lpthread
+	$(CC) omp_main.c -DVERBOSE -lm -o omp -fopenmp
+
+
