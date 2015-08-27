@@ -16,4 +16,5 @@ verbose: main.c p_main.c omp_main.c
 	$(CC) p_main.c -DVERBOSE -lm -o pthread -lpthread
 	$(CC) omp_main.c -DVERBOSE -lm -o omp -fopenmp
 
-
+clean:
+	rm -f omp pthread serial
