@@ -3,11 +3,14 @@
 #include <sys/time.h>
 
 #define SIZE 16
+//#define VERBOSE
 
 int main (int argc, char ** argv)
 {
-	printf ("Assignment C:  Sequential Algorithm! \n" );
 
+#ifdef VERBOSE
+	printf ("Assignment C:  Sequential Algorithm! \n" );
+#endif
 	int A[SIZE] = {	14, 13, 5, 16,
 			11, 10, 9, 12,
 			0, 8, 7, 15,
@@ -41,15 +44,16 @@ gettimeofday (&startt, NULL);
 //
 gettimeofday (&endt, NULL);
 //
-
+#ifdef VERBOSE
 	for (i = 0; i<SIZE; i++ )
 	{
 		printf("%d ", distance[i]);
 	}
 	printf("\n");
+#endif
 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
+	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
 
    return 0 ;
 }

@@ -3,8 +3,9 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-#define SIZE 			16
+#define SIZE 		16
 #define NUM_THREADS     16
+//#define VERBOSE
 
 int A[SIZE] = {14, 13, 5, 16,
 			   11, 10, 9, 12,
@@ -41,7 +42,9 @@ void *jump(void *threadid)
 
 int main (int argc, char ** argv)
 {
+#ifdef VERBOSE
 	printf ("Assignment C:  pthread Algorithm! \n" );
+#endif	
 	int i;
 	struct timeval startt, endt, result;
   	result.tv_sec = 0;
@@ -78,15 +81,18 @@ gettimeofday (&startt, NULL);
 //
 gettimeofday (&endt, NULL);
 //
+
+#ifdef VERBOSE
 	//Print all results
 	for (i = 0; i<SIZE; i++ )
 	{
 		printf("%d ", distance[i]);
 	}
 	printf("\n");
+#endif
 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
+	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
 
 	pthread_barrier_destroy(& barrier);
 	pthread_exit(NULL);

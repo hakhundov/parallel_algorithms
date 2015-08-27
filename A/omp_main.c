@@ -7,6 +7,7 @@
 #define SIZE 32
 //#define NUM_THREADS 2
 #define NT 32 
+//#define VERBOSE
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -84,26 +85,16 @@ int main (int argc, char ** argv)
 {
 	int i;
 	int n_threads;
-
+#ifdef VERBOSE
 	printf ("Assignment A:  openMP Algorithm! \n" );
-
+#endif
 struct timeval startt, endt, result1, result2;
 result1.tv_sec = 0;
 result1.tv_usec= 0;
 result2.tv_sec = 0;
 result2.tv_usec= 0;
 
-
 omp_set_num_threads(8);
-
-/*
-#pragma omp parallel
-{
-//	printf("I am using %d  threads", omp_get_num_threads());
-
-printf ("^^^HELLO I AM A THREAD!^^^");
-}
-*/
 
 //
 gettimeofday(&startt, NULL);
@@ -133,13 +124,14 @@ gettimeofday(&endt, NULL);
 result1.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
 //Print all results
+#ifdef VERBOSE
 	printf("prefix minimum is: \n");
 	for (i = 0; i<SIZE; i++ )
 	{
 		printf("%d ", C[0][i]);
 	}
 	printf("\n");
-
+#endif
 
 
 //
@@ -169,7 +161,7 @@ gettimeofday(&endt, NULL);
 //
 result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
-
+#ifdef VERBOSE
 //Print all results
 	printf("suffix minimum  is: \n");
 	for (i = 0; i<SIZE; i++ )
@@ -177,15 +169,12 @@ result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+st
 		printf("%d ", C[0][SIZE-i-1]);
 	}
 	printf("\n");
-
+#endif
 
 //add the two different timings to get the whole
 result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
 result1.tv_usec = result1.tv_usec + result2.tv_usec;
-printf(" %ld.%06ld | ", result1.tv_usec/1000000, result1.tv_usec%1000000);
-
-
- 
+printf("%ld.%06ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
 
 	return 0 ;
 }

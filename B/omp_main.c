@@ -4,11 +4,13 @@
 
 #define SIZE_A 8
 #define SIZE_B 32
+//#define VERBOSE
 
 int main (int argc, char ** argv)
 {
-   printf ("Assignment B:  openMP Algorithm! \n" );
-
+#ifdef VERBOSE
+	printf ("Assignment B:  openMP Algorithm! \n" );
+#endif
 	struct timeval startt, endt, result;
 	result.tv_sec = 0;
 	result.tv_usec= 0;
@@ -56,14 +58,15 @@ for (i = 0; i<SIZE_A+SIZE_B; i++ )
 gettimeofday (&endt, NULL);
 //
 
+#ifdef VERBOSE
 for (i = 0; i<SIZE_A+SIZE_B; i++ )
 {
 	printf("%d ", sorted[i]);
 }
 printf("\n");
- 
+#endif 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
+	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
 
    return 0 ;
 }

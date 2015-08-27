@@ -6,6 +6,7 @@
 
 #define SIZE 32
 #define NUM_THREADS 32
+//#define VERBOSE
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -101,19 +102,20 @@ void *combine(void *threadid)
 
 int main (int argc, char ** argv)
 {
+#ifdef VERBOSE
+		printf ("Assignment A:  pthread Algorithm! \n" );
+#endif
+
 	int i;
 	int n_threads;
 
-
-struct timeval startt, endt, result1, result2;
-result1.tv_sec = 0;
-result1.tv_usec= 0;
-result2.tv_sec = 0;
-result2.tv_usec= 0;
-
+	struct timeval startt, endt, result1, result2;
+	result1.tv_sec = 0;
+	result1.tv_usec= 0;
+	result2.tv_sec = 0;
+	result2.tv_usec= 0;
 
 	pthread_t threads[NUM_THREADS];
-	printf ("Assignment A:  pthread Algorithm! \n" );
 
 //
 gettimeofday(&startt, NULL);
@@ -123,7 +125,7 @@ gettimeofday(&startt, NULL);
 	execute(NUM_THREADS, init);
 	
 //STEP2
-	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
+	for (h=1; h<=log2(SIZE); h++)   // REPLACE WITH LOG2 here!!!
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		pthread_barrier_init (&barrier, NULL, n_threads);
@@ -131,13 +133,13 @@ gettimeofday(&startt, NULL);
 	}
 
 //STEP3
-	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
+	for (h=log2(SIZE); h>=0; h--)   // REPLACE WITH LOG2 here!!!
 	{
 		n_threads = SIZE/(int)pow(2,h);
 		pthread_barrier_init (&barrier, NULL, n_threads);
 		execute(n_threads,combine);
 	}
-
+#ifdef VERBOSE
 //Print all results
 	printf("prefix minimum is: \n");
 	for (i = 0; i<SIZE; i++ )
@@ -145,6 +147,7 @@ gettimeofday(&startt, NULL);
 		printf("%d ", C[0][i]);
 	}
 	printf("\n");
+#endif
 
 //
 gettimeofday(&endt, NULL);
@@ -181,6 +184,7 @@ gettimeofday(&endt, NULL);
 //
 result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
+#ifdef VERBOSE
 //Print all results
 	printf("suffix minimum  is: \n");
 	for (i = 0; i<SIZE; i++ )
@@ -188,11 +192,12 @@ result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+st
 		printf("%d ", C[0][SIZE-i-1]);
 	}
 	printf("\n");
+#endif
 
 //add the two different timings to get the whole
 result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
 result1.tv_usec = result1.tv_usec + result2.tv_usec;
-printf(" %ld.%06ld | ", result1.tv_usec/1000000, result1.tv_usec%1000000);
+printf("%ld.%07ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
  
 
 	pthread_barrier_destroy(& barrier);

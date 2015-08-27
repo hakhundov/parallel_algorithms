@@ -6,6 +6,7 @@
 
 #define SIZE_A 8
 #define SIZE_B 32
+//#define VERBOSE
 
 	int A[SIZE_A] = {28, 36, 40, 61, 68, 71, 123, 149};
 	int B[SIZE_B] = {2,  5,   18, 21,  24, 29,  31,  33, 
@@ -34,8 +35,9 @@ void *rankf(void *threadid)
 
 int main (int argc, char ** argv)
 {
+#ifdef VERBOSE
 	printf ("Assignment B: pthread Algorithm! \n" );
-
+#endif
 	struct timeval startt, endt, result;
 	result.tv_sec = 0;
 	result.tv_usec= 0;
@@ -85,15 +87,16 @@ gettimeofday (&startt, NULL);
 	}
 //
 gettimeofday (&endt, NULL);
-//	 
+//	
+#ifdef VERBOSE 
 	for (i = 0; i<SIZE_A+SIZE_B; i++ )
 	{
 		printf("%d ", sorted[i]);
 	}
 	printf("\n");
-	 
+#endif	 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
+	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
 
 
    return 0 ;

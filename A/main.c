@@ -4,9 +4,14 @@
 
 #define SIZE 32
 
+//#define VERBOSE
+
 int main (int argc, char ** argv)
 {
+
+#ifdef VERBOSE
    printf ("Assignment A:  Sequential Algorithm! \n" );
+#endif
 
 int A[SIZE] = {58,  89,   32, 73,  131, 156, 30,  29, 
          141, 37,  133, 151, 88,  53,  122, 126,
@@ -39,7 +44,7 @@ for (i = 1; i<SIZE; i++ )
 
 
 suffix_minima[SIZE-1] = A[SIZE-1];
-for (i = 1; i<SIZE+1; i++ )
+for (i = 1; i<SIZE; i++ )
 {
   if (A[SIZE-i-1] <= suffix_minima[SIZE-i])
 	{
@@ -54,6 +59,7 @@ for (i = 1; i<SIZE+1; i++ )
 gettimeofday(&endt, NULL);
 //
 
+#ifdef VERBOSE
 for (i = 0; i<SIZE; i++ )
 {
 	printf("%d " ,prefix_minima[i]);
@@ -65,10 +71,10 @@ for (i = 0; i<SIZE; i++ )
 	printf("%d " ,suffix_minima[i]);
 }
 printf("\n");
-
+#endif
 
 result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-printf(" %ld.%06ld | ", result.tv_usec/1000000, result.tv_usec%1000000);
+printf("%ld.%07ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
 
 
    return 0 ;
