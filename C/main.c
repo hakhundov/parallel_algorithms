@@ -26,9 +26,7 @@ int main (int argc, char ** argv)
 //
 gettimeofday (&startt, NULL);
 //
-
 	for (i = 0; i<SIZE; i++) distance[i]=0;
-
 	for (i = 0; i<SIZE; i++)
 	{
 		k = i;
@@ -40,7 +38,6 @@ gettimeofday (&startt, NULL);
 			distance[i]++;
 		} 
 	}
-
 //
 gettimeofday (&endt, NULL);
 //
@@ -53,7 +50,7 @@ gettimeofday (&endt, NULL);
 #endif
 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
+	printf("%ld", result.tv_usec);
 
    return 0 ;
 }

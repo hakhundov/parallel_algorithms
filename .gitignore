@@ -1,6 +1,9 @@
-/gpp
-A/A
-A/p_A
-B/B
-C/C
-C/p_C
+A/serial
+A/pthread
+A/omp
+B/serial
+B/pthread
+B/omp
+C/serial
+C/pthread
+C/omp

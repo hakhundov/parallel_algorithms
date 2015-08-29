@@ -96,7 +96,9 @@ gettimeofday (&endt, NULL);
 	printf("\n");
 #endif	 
 	result.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
-	printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
+	//printf("%ld.%06ld \n", result.tv_usec/1000000, result.tv_usec%1000000);
+
+printf("%ld", result.tv_usec);
 
 
    return 0 ;

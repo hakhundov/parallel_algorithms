@@ -22,21 +22,16 @@ void *jump(void *threadid)
 	long tid;
 	tid = (long)threadid;
    
-	for (i = 0; i < 5; i++)
-	{
-    	if (i==0) //first step inits
-		{
-			if (A[tid] != 0) distance[tid] = 1; //init distances
-			else 			 distance[tid] = 0; //root node	
-			A[tid] = A[tid]-1; //indicies correction
-		}
-    	else if (A[tid] != -1)
+	if (A[tid] != 0) distance[tid] = 1; //init distances
+	else 			 distance[tid] = 0; //root node	
+	A[tid] = A[tid]-1; //indicies correction
+	
+    while (A[tid] != -1)
 		{
 			distance[tid] = distance[tid] + distance[A[tid]];
 			A[tid] = A[A[tid]];
+			pthread_barrier_wait(&barrier);
 		}
-		pthread_barrier_wait(&barrier);
-	}
 	pthread_exit(NULL);
 }
 

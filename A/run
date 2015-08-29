@@ -1,0 +1,6 @@
+./serial
+echo
+./pthread
+echo
+./omp
+echo

@@ -5,7 +5,7 @@
 #include <sys/time.h>
 
 #define SIZE 32
-//#define NUM_THREADS 2
+#define NUM_THREADS 1
 #define NT 32 
 //#define VERBOSE
 
@@ -94,7 +94,7 @@ result1.tv_usec= 0;
 result2.tv_sec = 0;
 result2.tv_usec= 0;
 
-omp_set_num_threads(8);
+omp_set_num_threads(NUM_THREADS);
 
 //
 gettimeofday(&startt, NULL);
@@ -174,7 +174,7 @@ result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+st
 //add the two different timings to get the whole
 result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
 result1.tv_usec = result1.tv_usec + result2.tv_usec;
-printf("%ld.%06ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
-
+//printf("%ld.%06ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
+printf("%ld", result1.tv_usec);
 	return 0 ;
 }

@@ -12,15 +12,30 @@
 
 pthread_barrier_t   barrier; // barrier synchronization object
 
+
 int A[SIZE] = {58,  89,   32, 73,  131, 156, 30,  29, 
          141, 37,  133, 151, 88,  53,  122, 126,
          131, 49,  130, 115, 16,  83,  40,  145,
          10,  112, 20,  147, 14,  104, 111, 92};
 
+/*
+#undef SIZE
+#define SIZE 8192
+*/
+
+
 int B[6][32]; // LOG2(SIZE) + 1 
 int C[6][32]; // LOG2(SIZE) + 1 
 int S[6][32]; // LOG2(SIZE) + 1 
 
+
+/*
+int A[SIZE];
+
+int B[14][8192]; // LOG2(SIZE) + 1 
+int C[14][8192]; // LOG2(SIZE) + 1 
+int S[14][8192]; // LOG2(SIZE) + 1 
+*/
 
 int h; //global for STEP2&3
 void execute(int num_threads, void * (*func)(void *)) {
@@ -108,6 +123,14 @@ int main (int argc, char ** argv)
 
 	int i;
 	int n_threads;
+/*
+srand(42);
+
+for (i=0; i<8192; i++)
+{
+	A[i] = rand()%1000+20;
+}
+*/
 
 	struct timeval startt, endt, result1, result2;
 	result1.tv_sec = 0;
@@ -197,8 +220,9 @@ result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+st
 //add the two different timings to get the whole
 result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
 result1.tv_usec = result1.tv_usec + result2.tv_usec;
-printf("%ld.%07ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
- 
+//printf("%ld.%07ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
+ printf("%ld", result1.tv_usec);
+
 
 	pthread_barrier_destroy(& barrier);
 	pthread_exit(NULL);

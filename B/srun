@@ -1,0 +1,14 @@
+#!/bin/sh
+
+
+for k in serial pthread omp; do
+	sum=0
+	for i in `seq 1000`; do
+    	    f=$(./$k)
+        	sum=$(($sum + $f));
+	done
+
+	avg=$(($sum / 1000))
+	echo "$k $sum $avg"
+
+done

@@ -13,7 +13,7 @@ omp: omp_main.c
 
 verbose: main.c p_main.c omp_main.c	
 	$(CC) main.c -DVERBOSE -lm -o serial
-	$(CC) p_main.c -DVERBOSE -lm -o pthread -lpthread
+	$(CC) p_main.c -DVERBOSE -g -lm -o pthread -lpthread
 	$(CC) omp_main.c -DVERBOSE -lm -o omp -fopenmp
 
 clean:
