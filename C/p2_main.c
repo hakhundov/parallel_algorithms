@@ -4,7 +4,7 @@
 #include <sys/time.h>
 
 #define SIZE 		16
-#define NUM_THREADS     16
+#define NUM_THREADS    8 
 //#define VERBOSE
 
 int A[SIZE] = {14, 13, 5, 16,
@@ -14,36 +14,51 @@ int A[SIZE] = {14, 13, 5, 16,
 
 int distance[SIZE];
 
+int chunk;
+
 pthread_barrier_t   barrier; // barrier synchronization object
 
 void *jump(void *threadid)
 {
-	int i;
+	int i,j;
 	long tid;
 	tid = (long)threadid;
+	tid = tid*chunk;
    
-	if (A[tid] != 0) distance[tid] = 1; //init distances
-	else 			 distance[tid] = 0; //root node	
-	A[tid] = A[tid]-1; //indicies correction
+	for (i = 0; i < 5; i++)
+	{
 	
-    while (A[tid] != -1)
+		for (j=0; j<chunk; j++)
 		{
-			distance[tid] = distance[tid] + distance[A[tid]];
-			A[tid] = A[A[tid]];
-			pthread_barrier_wait(&barrier);
+    		if (i==0) //first step inits
+			{
+				if (A[tid+j] != 0) distance[tid+j] = 1; //init distances
+				else 			 distance[tid+j] = 0; //root node	
+				A[tid+j] = A[tid+j]-1; //indicies correction
+			}
+    		else if (A[tid+j] != -1)
+			{
+				distance[tid+j] = distance[tid+j] + distance[A[tid+j]];
+				A[tid+j] = A[A[tid+j]];
+			}
 		}
+
+		pthread_barrier_wait(&barrier);
+	}
 	pthread_exit(NULL);
 }
 
 int main (int argc, char ** argv)
 {
 #ifdef VERBOSE
-	printf ("Assignment C:  pthread Algorithm! \n" );
+	printf ("Assignment C:  pthread 2 Algorithm! \n" );
 #endif	
 	int i;
 	struct timeval startt, endt, result;
   	result.tv_sec = 0;
   	result.tv_usec= 0;
+
+    chunk = SIZE/NUM_THREADS;
 
 	pthread_barrier_init (&barrier, NULL, NUM_THREADS);
 //
