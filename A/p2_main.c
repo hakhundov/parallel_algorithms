@@ -75,7 +75,6 @@ void *init(void *threadid)
 	for (i=0; i<chunk; i++)
 	{	 
 		B[0][tid*chunk+i] = A[tid*chunk+i];
-	//	printf("tid is %d, i is %d, index is %d\n",tid, i, tid*chunk+i);
 	}
 	pthread_exit(NULL);
 }
@@ -84,7 +83,11 @@ void *R_init(void *threadid)
 {
 	long tid;
 	tid = (long)threadid;
-    B[0][SIZE-tid-1] = A[tid];
+    int i;
+	for (i=0; i<chunk; i++)
+	{
+        B[0][SIZE-tid-1] = A[tid];
+    }
 	pthread_exit(NULL);
 }
 
@@ -227,7 +230,6 @@ gettimeofday(&endt, NULL);
 //
 result1.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+startt.tv_usec);
 
-return 0; ////////////////
 
 //
 gettimeofday(&startt, NULL);
@@ -235,24 +237,22 @@ gettimeofday(&startt, NULL);
 //DO THE PREFIX NOW, by rotating
 
 //STEP 1
-	execute(32, R_init); //<--- REVERSE INITIALIZATION
+	execute(NUM_THREADS, R_init); //<--- REVERSE INITIALIZATION
 	
 //STEP2
 	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
 	{
 		n_threads = SIZE/(int)pow(2,h);
-		pthread_barrier_init (&barrier, NULL, n_threads);
-		execute(n_threads,minimum);
+		pthread_barrier_init (&barrier, NULL, NUM_THREADS);
+		execute(NUM_THREADS,minimum);
 	}
 
 //STEP3
 	for (h=5; h>=0; h--)   // REPLACE WITH LOG2 here!!!
 	{
-        
-        printf("**** h is %d \n", h);
 		n_threads = SIZE/(int)pow(2,h);
-		pthread_barrier_init (&barrier, NULL, n_threads);
-		execute(n_threads,combine);
+		pthread_barrier_init (&barrier, NULL, NUM_THREADS);
+		execute(NUM_THREADS,combine);
 	}
 
 //
