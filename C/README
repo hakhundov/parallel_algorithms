@@ -1,0 +1,16 @@
+Sequential implementation:		main.c
+Pthread implementation:			p_main.c
+Improved Pthread imp.n:			p2_main.c
+Open MP implementaion:			omp_main.c
+
+
+Run script: ./run
+	Runs all implementations
+Average script: ./srun 
+	Runs all implementations 1000 times each and outputs average time. Must make in non verbose mode first.
+Makefile instructions:
+
+make  		->  make all three implementations in non-verbose  mode (show timing information only)
+make verbose-> compile all three versions in verbose mode (show output and timing information)
+make clean 	-> clean
+

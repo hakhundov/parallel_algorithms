@@ -5,7 +5,7 @@
 #include <sys/time.h>
 
 #define SIZE 32
-#define NUM_THREADS 2 
+#define NUM_THREADS 8 
 //#define VERBOSE
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -86,7 +86,7 @@ void *R_init(void *threadid)
     int i;
 	for (i=0; i<chunk; i++)
 	{
-        B[0][SIZE-tid-1] = A[tid];
+        B[0][SIZE-(tid*chunk+i)-1] = A[tid*chunk+i];
     }
 	pthread_exit(NULL);
 }
@@ -156,7 +156,7 @@ void *combine(void *threadid)
 int main (int argc, char ** argv)
 {
 #ifdef VERBOSE
-		printf ("Assignment A:  pthread Algorithm! \n" );
+		printf ("Assignment A:  pthread 2 Algorithm! \n" );
 #endif
 
 	int i;
@@ -238,7 +238,7 @@ gettimeofday(&startt, NULL);
 
 //STEP 1
 	execute(NUM_THREADS, R_init); //<--- REVERSE INITIALIZATION
-	
+
 //STEP2
 	for (h=1; h<=5; h++)   // REPLACE WITH LOG2 here!!!
 	{
@@ -270,12 +270,11 @@ result2.tv_usec = (endt.tv_sec*1000000+endt.tv_usec) - (startt.tv_sec*1000000+st
 	printf("\n");
 #endif
 
-//add the two different timings to get the whole
-result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
-result1.tv_usec = result1.tv_usec + result2.tv_usec;
-//printf("%ld.%07ld \n", result1.tv_usec/1000000, result1.tv_usec%1000000);
- printf("%ld", result1.tv_usec);
+	//add the two different timings to get the whole
+	result1.tv_sec  = result1.tv_sec  + result2.tv_sec;
+	result1.tv_usec = result1.tv_usec + result2.tv_usec;
 
+	printf("%ld", result1.tv_usec);
 
 	pthread_barrier_destroy(& barrier);
 	pthread_exit(NULL);
