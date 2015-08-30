@@ -23,7 +23,7 @@ int main (int argc, char ** argv)
 	int rc;
 	long t;
 
-	omp_set_num_threads(2);
+	omp_set_num_threads(NUM_THREADS);
 
 	struct timeval startt, endt, result;
 	result.tv_sec = 0;
@@ -36,7 +36,7 @@ gettimeofday (&startt, NULL);
         #pragma omp parallel shared(A, distance, i) private(t)
         {
          #pragma omp for schedule(dynamic,4)
-         for(t=0; t<NUM_THREADS; t++)
+         for(t=0; t<SIZE; t++)
             {
                 if (i==0) //first step inits
                 {
